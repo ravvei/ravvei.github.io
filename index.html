@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>САМОУНИЧТОЖЕНИЕ</title>
+    <style>
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --dark-bg: #0d0221;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Rajdhani', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue), 
+                        0 0 30px var(--neon-purple);
+            border-radius: 8px;
+            background: rgba(13, 2, 33, 0.8);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #countdown {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin: 1rem 0;
+            letter-spacing: 3px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 1rem 0;
+            background: rgba(5, 217, 232, 0.1);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            padding: 10px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        button {
+            background: transparent;
+            color: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+            padding: 10px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        button:hover {
+            background: var(--neon-pink);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        #saved-messages {
+            text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(255, 42, 109, 0.05);
+            border-left: 2px solid var(--neon-pink);
+        }
+
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, var(--neon-purple), transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--neon-blue), transparent 50%);
+            opacity: 0.3;
+            z-index: 1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.4; }
+        }
+
+        .scanlines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(
+                    rgba(255, 255, 255, 0.03) 1px, 
+                    transparent 1px
+                );
+            background-size: 100% 2px;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <h1>САМОУНИЧТОЖЕНИЕ АКТИВИРОВАНО</h1>
+        <div id="countdown">10.00</div>
+        <p>Оставьте цифровое послание перед уничтожением:</p>
+        <textarea id="message" placeholder="Ваша последняя мысль..."></textarea>
+        <button id="save-btn">СОХРАНИТЬ В ИСТОРИЮ</button>
+        <div id="saved-messages"></div>
+    </div>
+
+    <script>
+        const doomTime = Date.now() + 10000;
+        
+        function updateCountdown() {
+            const now = Date.now();
+            const distance = doomTime - now;
+            const seconds = (distance / 1000).toFixed(2);
+            
+            document.getElementById("countdown").textContent = seconds;
+            
+            if (distance <= 0) {
+                document.body.innerHTML = `
+                    <div class="glow" style="animation: none; opacity: 0.8;"></div>
+                    <div class="scanlines"></div>
+                    <div class="container">
+                        <h1 style="color: #ff0000; text-shadow: 0 0 20px #ff0000;">УНИЧТОЖЕНИЕ ЗАВЕРШЕНО</h1>
+                        <p>${new Date().toLocaleString()}</p>
+                        <div id="final-messages" style="
+                            margin-top: 2rem;
+                            padding: 1rem;
+                            background: rgba(255, 0, 0, 0.1);
+                            border-left: 2px solid #ff0000;
+                        "></div>
+                    </div>
+                `;
+                
+                const saved = JSON.parse(localStorage.getItem('doomMessages') || '[]');
+                document.getElementById("final-messages").innerHTML = 
+                    saved.length > 0 
+                        ? '<h3>Последние послания:</h3>' + 
+                          saved.map(msg => `<p>"${msg.text}" — ${new Date(msg.time).toLocaleTimeString()}</p>`).join('')
+                        : '<p>Никто ничего не написал...</p>';
+                
+                localStorage.removeItem('doomMessages');
+            }
+        }
+
+        setInterval(updateCountdown, 10);
+        updateCountdown();
+
+        document.getElementById("save-btn").addEventListener("click", () => {
+            const message = document.getElementById("message").value.trim();
+            if (!message) return;
+            
+            const savedMessages = JSON.parse(localStorage.getItem('doomMessages') || '[]');
+            savedMessages.push({
+                text: message,
+                time: Date.now()
+            });
+            localStorage.setItem('doomMessages', JSON.stringify(savedMessages));
+            
+            document.getElementById("saved-messages").innerHTML = 
+                savedMessages.map(msg => `
+                    <div style="
+                        margin-bottom: 0.5rem;
+                        padding: 0.5rem;
+                        background: rgba(255, 255, 255, 0.05);
+                    ">
+                        ${msg.text}
+                        <span style="
+                            display: block;
+                            font-size: 0.7rem;
+                            color: var(--neon-blue);
+                        ">${new Date(msg.time).toLocaleTimeString()}</span>
+                    </div>
+                `).join('');
+            
+            document.getElementById("message").value = "";
+        });
+    </script>
+</body>
+</html>
