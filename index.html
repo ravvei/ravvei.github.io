@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>САМОУНИЧТОЖЕНИЕ</title>
+    <title>САЙТ-САМОУБИЙЦА | 24 ЧАСА</title>
     <style>
         :root {
             --neon-pink: #ff2a6d;
             --neon-blue: #05d9e8;
             --neon-purple: #d300c5;
             --dark-bg: #0d0221;
+            --glow: 0 0 10px;
+        }
+        
+        @font-face {
+            font-family: 'Rajdhani';
+            src: url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700&display=swap');
         }
         
         body {
@@ -18,79 +24,134 @@
             font-family: 'Rajdhani', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
+            overflow: hidden;
+            position: relative;
         }
 
         .container {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             padding: 2rem;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue), 
-                        0 0 30px var(--neon-purple);
-            border-radius: 8px;
-            background: rgba(13, 2, 33, 0.8);
-            max-width: 500px;
+            border: 1px solid var(--neon-blue);
+            box-shadow: var(--glow) var(--neon-blue), 
+                        var(--glow) var(--neon-purple);
+            border-radius: 5px;
+            background: rgba(13, 2, 33, 0.7);
+            backdrop-filter: blur(5px);
+            max-width: 600px;
             width: 90%;
+            animation: border-pulse 3s infinite alternate;
+        }
+
+        @keyframes border-pulse {
+            0% { box-shadow: 0 0 5px var(--neon-blue); }
+            100% { box-shadow: 0 0 20px var(--neon-purple); }
         }
 
         h1 {
             color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-            font-size: 1.8rem;
+            text-shadow: var(--glow) var(--neon-pink);
+            font-size: 2rem;
             margin-bottom: 1.5rem;
+            letter-spacing: 2px;
         }
 
         #countdown {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: bold;
             color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            margin: 1rem 0;
-            letter-spacing: 3px;
+            text-shadow: var(--glow) var(--neon-blue);
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 5px;
+        }
+
+        .countdown-label {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto 1rem;
+            color: var(--neon-blue);
+            font-size: 0.8rem;
         }
 
         textarea {
             width: 100%;
-            height: 100px;
-            margin: 1rem 0;
+            height: 120px;
+            margin: 1.5rem 0;
             background: rgba(5, 217, 232, 0.1);
             border: 1px solid var(--neon-blue);
             color: white;
-            padding: 10px;
+            padding: 15px;
             font-family: inherit;
             resize: none;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            box-shadow: var(--glow) var(--neon-blue);
         }
 
         button {
             background: transparent;
             color: var(--neon-pink);
             border: 1px solid var(--neon-pink);
-            padding: 10px 25px;
-            font-size: 1rem;
+            padding: 12px 30px;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
             background: var(--neon-pink);
             color: black;
-            box-shadow: 0 0 15px var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         #saved-messages {
             text-align: left;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
             padding: 10px;
             background: rgba(255, 42, 109, 0.05);
             border-left: 2px solid var(--neon-pink);
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) transparent;
+        }
+
+        #saved-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #saved-messages::-webkit-scrollbar-thumb {
+            background-color: var(--neon-blue);
+            border-radius: 10px;
         }
 
         .glow {
@@ -108,8 +169,9 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 0.2; }
-            100% { opacity: 0.4; }
+            0% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.2; transform: scale(1.05); }
         }
 
         .scanlines {
@@ -118,97 +180,236 @@
             height: 100%;
             background: 
                 linear-gradient(
+                    to bottom,
                     rgba(255, 255, 255, 0.03) 1px, 
                     transparent 1px
                 );
-            background-size: 100% 2px;
-            z-index: 1;
+            background-size: 100% 5px;
+            z-index: 2;
             pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+
+        .glitch {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0.05;
+            background: 
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
+            animation: glitch 0.3s infinite alternate;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .destruction-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle, transparent 10%, black 10%) 0 0 / 20px 20px,
+                linear-gradient(to right, #ff0000, #000000);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        @media (max-width: 600px) {
+            #countdown {
+                font-size: 2.5rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="glow"></div>
     <div class="scanlines"></div>
+    <div class="glitch"></div>
+    <div class="destruction-effect" id="destruction"></div>
     
     <div class="container">
         <h1>САМОУНИЧТОЖЕНИЕ АКТИВИРОВАНО</h1>
-        <div id="countdown">10.00</div>
-        <p>Оставьте цифровое послание перед уничтожением:</p>
-        <textarea id="message" placeholder="Ваша последняя мысль..."></textarea>
-        <button id="save-btn">СОХРАНИТЬ В ИСТОРИЮ</button>
+        <div id="countdown">24:00:00</div>
+        <div class="countdown-label">
+            <span>ЧАСЫ</span>
+            <span>МИНУТЫ</span>
+            <span>СЕКУНДЫ</span>
+        </div>
+        <p>Оставьте послание перед цифровой смертью:</p>
+        <textarea id="message" placeholder="Ваше сообщение исчезнет через..."></textarea>
+        <button id="save-btn">ЗАКОДИРОВАТЬ СООБЩЕНИЕ</button>
         <div id="saved-messages"></div>
     </div>
 
     <script>
-        const doomTime = Date.now() + 10000;
+        const doomTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+        const destructionEffect = document.getElementById('destruction');
+        const container = document.querySelector('.container');
         
         function updateCountdown() {
-            const now = Date.now();
+            const now = new Date().getTime();
             const distance = doomTime - now;
-            const seconds = (distance / 1000).toFixed(2);
             
-            document.getElementById("countdown").textContent = seconds;
+            const hours = Math.floor(distance / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (distance < 3600000) {
+                const intensity = 1 - (distance / 3600000);
+                destructionEffect.style.opacity = intensity * 0.5;
+                container.style.boxShadow = `0 0 ${10 + intensity * 20}px var(--neon-pink)`;
+                
+                if (Math.random() < intensity * 0.3) {
+                    container.style.animation = 'none';
+                    setTimeout(() => {
+                        container.style.animation = 'border-pulse 3s infinite alternate';
+                    }, 100);
+                }
+            }
             
             if (distance <= 0) {
-                document.body.innerHTML = `
-                    <div class="glow" style="animation: none; opacity: 0.8;"></div>
-                    <div class="scanlines"></div>
-                    <div class="container">
-                        <h1 style="color: #ff0000; text-shadow: 0 0 20px #ff0000;">УНИЧТОЖЕНИЕ ЗАВЕРШЕНО</h1>
-                        <p>${new Date().toLocaleString()}</p>
-                        <div id="final-messages" style="
-                            margin-top: 2rem;
-                            padding: 1rem;
-                            background: rgba(255, 0, 0, 0.1);
-                            border-left: 2px solid #ff0000;
-                        "></div>
-                    </div>
-                `;
+                destructionEffect.style.opacity = '1';
+                destructionEffect.style.background = '#000';
+                container.style.opacity = '0';
                 
-                const saved = JSON.parse(localStorage.getItem('doomMessages') || '[]');
-                document.getElementById("final-messages").innerHTML = 
-                    saved.length > 0 
-                        ? '<h3>Последние послания:</h3>' + 
-                          saved.map(msg => `<p>"${msg.text}" — ${new Date(msg.time).toLocaleTimeString()}</p>`).join('')
-                        : '<p>Никто ничего не написал...</p>';
-                
-                localStorage.removeItem('doomMessages');
+                setTimeout(() => {
+                    document.body.innerHTML = `
+                        <div class="glow" style="background: radial-gradient(circle, #ff0000, #000); animation: none;"></div>
+                        <div class="scanlines" style="background-size: 100% 2px;"></div>
+                        <div class="container" style="
+                            border-color: #ff0000;
+                            box-shadow: 0 0 30px #ff0000;
+                            opacity: 1;
+                            max-width: 80%;
+                        ">
+                            <h1 style="color: #ff0000; text-shadow: 0 0 20px #ff0000;">УНИЧТОЖЕНИЕ ЗАВЕРШЕНО</h1>
+                            <p style="margin-bottom: 2rem;">${new Date().toLocaleString()}</p>
+                            <div id="final-messages" style="
+                                margin-top: 2rem;
+                                padding: 1rem;
+                                background: rgba(255, 0, 0, 0.1);
+                                border-left: 2px solid #ff0000;
+                                max-height: 50vh;
+                                overflow-y: auto;
+                            "></div>
+                        </div>
+                    `;
+                    
+                    const saved = JSON.parse(localStorage.getItem('doomMessages') || '[]');
+                    const finalMessages = document.getElementById('final-messages');
+                    
+                    if (saved.length > 0) {
+                        finalMessages.innerHTML = '<h3 style="color: #ff5555;">ПОСЛЕДНИЕ ПОСЛАНИЯ:</h3>';
+                        saved.forEach(msg => {
+                            finalMessages.innerHTML += `
+                                <div style="
+                                    margin-bottom: 1rem;
+                                    padding: 0.8rem;
+                                    background: rgba(255, 0, 0, 0.05);
+                                    border-bottom: 1px dashed #ff0000;
+                                ">
+                                    <p style="margin: 0;">${msg.text}</p>
+                                    <small style="color: #ff9999;">${new Date(msg.time).toLocaleString()}</small>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        finalMessages.innerHTML = '<p>Архив сообщений пуст. Никто ничего не написал...</p>';
+                    }
+                    
+                    localStorage.removeItem('doomMessages');
+                }, 1500);
             }
         }
 
-        setInterval(updateCountdown, 10);
+        setInterval(updateCountdown, 1000);
         updateCountdown();
 
         document.getElementById("save-btn").addEventListener("click", () => {
             const message = document.getElementById("message").value.trim();
             if (!message) return;
             
+            const btn = document.getElementById('save-btn');
+            btn.style.transform = 'scale(0.95)';
+            btn.style.boxShadow = 'none';
+            setTimeout(() => {
+                btn.style.transform = '';
+                btn.style.boxShadow = '';
+            }, 200);
+            
             const savedMessages = JSON.parse(localStorage.getItem('doomMessages') || '[]');
             savedMessages.push({
                 text: message,
-                time: Date.now()
+                time: new Date().getTime()
             });
             localStorage.setItem('doomMessages', JSON.stringify(savedMessages));
             
-            document.getElementById("saved-messages").innerHTML = 
-                savedMessages.map(msg => `
-                    <div style="
-                        margin-bottom: 0.5rem;
-                        padding: 0.5rem;
-                        background: rgba(255, 255, 255, 0.05);
-                    ">
-                        ${msg.text}
-                        <span style="
-                            display: block;
-                            font-size: 0.7rem;
-                            color: var(--neon-blue);
-                        ">${new Date(msg.time).toLocaleTimeString()}</span>
-                    </div>
-                `).join('');
+            const messageElement = document.createElement('div');
+            messageElement.style = `
+                margin-bottom: 0.8rem;
+                padding: 0.8rem;
+                background: rgba(255, 42, 109, 0.1);
+                border-left: 2px solid var(--neon-pink);
+                animation: fadeIn 0.5s ease-out;
+            `;
+            messageElement.innerHTML = `
+                ${message}
+                <div style="
+                    font-size: 0.7rem;
+                    color: var(--neon-blue);
+                    margin-top: 0.5rem;
+                ">${new Date().toLocaleTimeString()}</div>
+            `;
             
+            document.getElementById("saved-messages").prepend(messageElement);
             document.getElementById("message").value = "";
+            
+            const messagesContainer = document.getElementById('saved-messages');
+            messagesContainer.style.boxShadow = '0 0 15px var(--neon-pink)';
+            setTimeout(() => {
+                messagesContainer.style.boxShadow = 'none';
+            }, 500);
         });
+
+        document.getElementById('message').addEventListener('focus', function() {
+            this.style.boxShadow = '0 0 15px var(--neon-blue)';
+        });
+        
+        document.getElementById('message').addEventListener('blur', function() {
+            this.style.boxShadow = '';
+        });
+
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                container.style.animation = 'none';
+                setTimeout(() => {
+                    container.style.animation = 'border-pulse 3s infinite alternate';
+                }, 50);
+            }
+        }, 5000);
     </script>
 </body>
 </html>
