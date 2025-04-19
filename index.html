@@ -262,7 +262,7 @@
     </div>
 
     <script>
-        const doomTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+        const doomTime = new Date("2025-04-20T19:00:00").getTime();
         const destructionEffect = document.getElementById('destruction');
         const container = document.querySelector('.container');
         
@@ -305,7 +305,7 @@
                             opacity: 1;
                             max-width: 80%;
                         ">
-                            <h1 style="color: #ff0000; text-shadow: 0 0 20px #ff0000;">УНИЧТОЖЕНИЕ ЗАВЕРШЕНО</h1>
+                            <h1 style="color: #ff0000; text-shadow: 0 0 20px #ff0000;">💀 УНИЧТОЖЕНИЕ ЗАВЕРШЕНО</h1>
                             <p style="margin-bottom: 2rem;">${new Date().toLocaleString()}</p>
                             <div id="final-messages" style="
                                 margin-top: 2rem;
